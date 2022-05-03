@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="movieItem"
+            type="com.example.moviesapp.data.Movie" />
+        <variable
+            name="viewmdel"
+            type="com.example.moviesapp.presentation.viewmodel.MovieDetailsViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.view.activity.MovieDetailsActivity">
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/detailsImg"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/movie_cover_height"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:scaleType="fitXY"
+                    app:loadPosterImg="@{movieItem.posterPath}"></ImageView>
+
+                <!--first air date-->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/movie_title_padding"
+                    android:paddingTop="@dimen/movie_title_padding"
+                    android:paddingRight="@dimen/movie_title_padding"
+                    android:text="On Air Date"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold"></TextView>
+
+                <TextView
+                    android:id="@+id/detailsMovieFirstAirDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/movie_title_padding"
+                    android:paddingTop="@dimen/movie_title_padding"
+                    android:paddingRight="@dimen/movie_title_padding"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:firstAirDate="@{movieItem.firstAirDate}"></TextView>
+
+                <!-- //overview-->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/movie_title_padding"
+                    android:paddingTop="@dimen/movie_title_padding"
+                    android:paddingRight="@dimen/movie_title_padding"
+                    android:text="overview"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold"></TextView>
+
+                <TextView
+                    android:id="@+id/detailsMovieOverview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:autoSizeTextType="uniform"
+                    android:padding="@dimen/movie_title_padding"
+                    android:paddingLeft="@dimen/movie_title_padding"
+                    android:paddingRight="@dimen/movie_title_padding"
+                    android:text="@{movieItem.overview}"
+                    android:textSize="18sp"
+                    android:textStyle="bold"></TextView>
+
+                <TextView
+                    android:id="@+id/trailersTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/movie_title_padding"
+                    android:paddingTop="@dimen/movie_title_padding"
+                    android:paddingRight="@dimen/movie_title_padding"
+                    android:text="Trailer"
+                    android:textAlignment="center"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold"></TextView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/trailersRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"></androidx.recyclerview.widget.RecyclerView>
+            </LinearLayout>
+        </ScrollView>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/favFab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            app:fabSize="normal"
+            android:elevation="20dp"
+            android:src="@drawable/fav_icon"
+            android:backgroundTint="@color/fabColor"
+            app:backgroundTint="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">MoviesApp</string>
+    <string name="movie_item_name">Movie Name</string>
+    <string name="movie_item_description">this is description for this a great movie</string>
+    <string name="movie_item_author">movie author</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
