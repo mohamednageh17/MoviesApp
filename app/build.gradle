@@ -1,8 +1,10 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
-    id 'kotlin-android-extensions'
     id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id("kotlin-parcelize")
+
 }
 
 android {
@@ -53,51 +55,34 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     //recyclerview
     implementation("androidx.recyclerview:recyclerview:1.2.1")
-    //klaxon
-    implementation 'com.beust:klaxon:5.5'
-    // Coil
-    implementation "io.coil-kt:coil:1.1.1"
-    implementation 'com.squareup.retrofit2:retrofit:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
 
-    implementation 'com.squareup.moshi:moshi-kotlin:1.9.3'
-    implementation 'com.squareup.retrofit2:converter-moshi:2.9.0'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
-    implementation 'io.reactivex.rxjava2:rxjava:2.1.9'
-    implementation 'io.reactivex.rxjava2:rxandroid:2.0.2'
+    // rx android
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
+    // retrofit
+    api 'com.squareup.retrofit2:retrofit:2.9.0'
+    api 'com.squareup.retrofit2:converter-gson:2.9.0'
+    api 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+    api 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+
+    // room
+    api 'androidx.room:room-runtime:2.4.2'
+    kapt 'androidx.room:room-compiler:2.4.2'
+    api 'androidx.room:room-ktx:2.4.2'
+    api 'androidx.room:room-rxjava2:2.4.2'
 
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
 
-    // Koin main features for Android
-    implementation "io.insert-koin:koin-android:$koin_version"
+    //hilt
+    annotationProcessor 'com.google.dagger:hilt-compiler:2.42'
+    implementation "com.google.dagger:hilt-android:2.41"
+    kapt "com.google.dagger:hilt-android-compiler:2.41"
 
-    // Java Compatibility
-    implementation "io.insert-koin:koin-android-compat:$koin_version"
-    // Jetpack WorkManager
-    implementation "io.insert-koin:koin-androidx-workmanager:$koin_version"
-    // Navigation Graph
-    implementation "io.insert-koin:koin-androidx-navigation:$koin_version"
-    // Jetpack Compose
-    implementation "io.insert-koin:koin-androidx-compose:$koin_version"
-    //navigation component
-    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
-    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
-    implementation("androidx.drawerlayout:drawerlayout:1.1.1")
-
-    def roomVersion = "2.4.2"
-
-    implementation("androidx.room:room-runtime:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-    kapt("androidx.room:room-compiler:$roomVersion")
-    // optional - RxJava2 support for Room
-    implementation("androidx.room:room-rxjava2:$roomVersion")
-
-    implementation("com.google.dagger:hilt-android:2.38.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.38.1")
-
+    // Activity KTX for viewModels()
+    implementation "androidx.activity:activity-ktx:$activity_ktx_version"
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
 }
 
 kapt {

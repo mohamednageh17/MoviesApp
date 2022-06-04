@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviesapp.databinding.TrailerItemBinding
-import com.example.moviesapp.data.Trailer
+import com.example.moviesapp.domain.model.Trailer
 
 class TrailersAdapter(private val trailersList:List<Trailer>,
                       private val itemClickListener: (Trailer) -> Unit):

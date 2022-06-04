@@ -5,100 +5,81 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.example.moviesapp.R
 import com.example.moviesapp.presentation.view.adapter.MoviesAdapter
 import com.example.moviesapp.databinding.ActivityMainBinding
-import com.example.moviesapp.data.Movie
-import com.example.moviesapp.data.MovieResponse
-import com.example.moviesapp.data.Utilis.StateData
-import com.example.moviesapp.data.network.MoviesApi
-import com.example.moviesapp.data.repository.Repository
-import com.example.moviesapp.data.room.MovieDatabase
-import com.example.moviesapp.presentation.viewmodel.MovieViewModelFactory
+import com.example.moviesapp.presentation.Utilis.StateData
+import com.example.moviesapp.domain.model.MovieModel
 import com.example.moviesapp.presentation.viewmodel.MoviesViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    lateinit var binding: ActivityMainBinding
-    private lateinit var moviesViewModel: MoviesViewModel
-    private lateinit var movieViewModelFactory: MovieViewModelFactory
-    private lateinit var moviesAdapter: MoviesAdapter
-    lateinit var repository: Repository
+    private lateinit var binding: ActivityMainBinding
+
+    private val moviesViewModel: MoviesViewModel by viewModels()
+
+    private val adapter by lazy { MoviesAdapter(MoviesAdapter.OnItemClickListener {
+        onMovieItemClicked(it)
+    }) }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initViewModel()
-
+        initUI()
         observeUI()
     }
 
-    private fun initViewModel() {
-        val retrofitService = MoviesApi.retrofitService
-        val movieDB = MovieDatabase.getDatabase(this)
-        repository = Repository(retrofitService, movieDB)
-        movieViewModelFactory = MovieViewModelFactory(repository)
-        moviesViewModel = ViewModelProvider(this, movieViewModelFactory)
-            .get(MoviesViewModel::class.java)
+    fun initUI(){
+        binding.recyclerView.adapter=adapter
     }
 
     private fun observeUI() {
-        val itemOnClick: (Movie) -> Unit = { movie -> onMovieItemClicked(movie) }
 
         moviesViewModel.movieResponse.observe(this){
             when (it!!.status) {
                 StateData.DataStatus.LOADING -> showProgress()
-                StateData.DataStatus.SUCCESS -> handleSuccessState(it, itemOnClick)
-                StateData.DataStatus.ERROR -> handleErrorState(it)
+                StateData.DataStatus.SUCCESS -> handleSuccessState(it)
+                StateData.DataStatus.ERROR -> handleErrorState(it.error)
                 else -> {}
             }
         }
 
-        moviesViewModel.favList.observe(this){
+      /*  moviesViewModel.favList.observe(this){
             if (it != null) {
                 binding.progress.visibility = View.GONE
                 moviesAdapter = MoviesAdapter(it, itemOnClick)
                 binding.moviesRecyclerView.adapter = moviesAdapter
             }
-        }
+        }*/
     }
 
     private fun showProgress() {
-        binding.progress.isVisible = true
+        binding.progressBar.isVisible = true
     }
 
     private fun hideProgress() {
-        binding.progress.isVisible = false
+        binding.progressBar.isVisible = false
     }
 
-    private fun handleSuccessState(
-        it: StateData<MovieResponse>,
-        itemClickListener: (Movie) -> Unit
-    ) {
+    private fun handleSuccessState(it: StateData<List<MovieModel>>) {
         hideProgress()
-        moviesAdapter = MoviesAdapter(it.data!!.results, itemClickListener)
-        binding.moviesRecyclerView.adapter = moviesAdapter
+        adapter.submitList(it.data)
     }
 
-
-    private fun handleErrorState(it: StateData<MovieResponse>) {
+    private fun handleErrorState(it: Throwable?) {
         hideProgress()
-        showToast(it.error!!.message)
+        Toast.makeText(this, it!!.message, Toast.LENGTH_LONG).show()
     }
 
-    private fun showToast(message: String?) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
-    }
-
-
-    private fun onMovieItemClicked(movie: Movie) {
+    private fun onMovieItemClicked(movie: MovieModel) {
         intent = Intent(this, MovieDetailsActivity::class.java)
         intent.putExtra("movie", movie)
         startActivity(intent)
@@ -106,8 +87,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-         if (moviesViewModel.selectedMenuID == R.id.myFavItem)
-             moviesViewModel.getFavouriteMovies()
+        /* if (moviesViewModel.selectedMenuID == R.id.myFavItem)
+             moviesViewModel.getFavouriteMovies()*/
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -139,7 +120,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.myFavItem -> {
                 showProgress()
-                moviesViewModel.getFavouriteMovies()
+               // moviesViewModel.getFavouriteMovies()
                 moviesViewModel.selectedMenuID = R.id.myFavItem
             }
         }

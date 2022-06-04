@@ -1,27 +1,27 @@
-package com.example.moviesapp.data.room
+package com.example.moviesapp.data.local
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import com.example.moviesapp.data.Movie
+import com.example.moviesapp.data.model.local.MovieEntity
 import io.reactivex.Completable
 import io.reactivex.Single
 
 @Dao
 interface MovieDao {
     @Insert
-    fun insert(movie: Movie):Completable
+    fun insert(movie: MovieEntity):Completable
 
     @Delete
-    fun delete(movie: Movie):Completable
+    fun delete(movie: MovieEntity):Completable
 
     @Query("delete from fav_movie")
     fun deleteAllFavouriteMovies()
 
     @Query("select * from fav_movie")
-    fun getAllFavouriteMovies():Single<List<Movie>>
+    fun getAllFavouriteMovies():Single<List<MovieEntity>>
 
     @Query("select * from fav_movie where id=:id")
-    fun checkMovieIsFavourite(id:Long):Single<List<Movie>>
+    fun checkMovieIsFavourite(id:Long):Single<List<MovieEntity>>
 }

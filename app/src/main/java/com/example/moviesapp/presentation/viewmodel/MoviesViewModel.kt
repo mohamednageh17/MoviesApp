@@ -1,36 +1,33 @@
 package com.example.moviesapp.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.moviesapp.data.Utilis.StateLiveData
-import com.example.moviesapp.data.Movie
-import com.example.moviesapp.data.MovieResponse
-import com.example.moviesapp.data.repository.Repository
+import com.example.moviesapp.presentation.Utilis.StateLiveData
+import com.example.moviesapp.domain.model.MovieModel
+import com.example.moviesapp.domain.usecases.FetchMoviesUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 
-private const val TAG = "MainActivityViewModel"
+@HiltViewModel
+class MoviesViewModel @Inject constructor(val fetchMoviesUseCase: FetchMoviesUseCase) : BaseViewModel() {
 
-class MoviesViewModel(private val repository: Repository) : BaseViewModel() {
-
-    private var _movieResponse = StateLiveData<MovieResponse>()
-    val movieResponse: StateLiveData<MovieResponse> get() = _movieResponse
+    private var _movieResponse = StateLiveData<List<MovieModel>>()
+    val movieResponse: StateLiveData<List<MovieModel>> get() = _movieResponse
 
     var selectedMenuID: Int = -1
 
-    private var _favList = MutableLiveData<List<Movie>?>()
-    val favList: LiveData<List<Movie>?> get() = _favList
+    private var _favList = MutableLiveData<List<MovieModel>>()
+    val favList: LiveData<List<MovieModel>> get() = _favList
 
     init {
         loadPopularMovies()
     }
 
     fun loadPopularMovies() {
-        repository.getPopularMoviesFromApi()
+        fetchMoviesUseCase("popular")
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { _movieResponse.postLoading() }
@@ -42,9 +39,8 @@ class MoviesViewModel(private val repository: Repository) : BaseViewModel() {
 
     }
 
-
     fun loadTopMovies() {
-        repository.getTopRatedMoviesFromApi()
+        fetchMoviesUseCase("top_rated")
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { _movieResponse.postLoading() }
@@ -56,7 +52,7 @@ class MoviesViewModel(private val repository: Repository) : BaseViewModel() {
     }
 
     fun loadOnTheAirMovies() {
-        repository.getOnTheAirMoviesFromApi()
+        fetchMoviesUseCase("on_the_air")
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { _movieResponse.postLoading() }
@@ -68,7 +64,7 @@ class MoviesViewModel(private val repository: Repository) : BaseViewModel() {
     }
 
     fun loadAiringTodayMovies() {
-        repository.getAiringTodayMoviesFromApi()
+        fetchMoviesUseCase("airing_today")
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe { _movieResponse.postLoading() }
@@ -79,20 +75,11 @@ class MoviesViewModel(private val repository: Repository) : BaseViewModel() {
             })
     }
 
-    fun getFavouriteMovies() {
-        repository.getFavouriteMoviesFromLocalDb()
+   /* fun getFavouriteMovies() {
+        repositoryImpl.getFavouriteMoviesFromLocalDb()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ moviesList: List<Movie> -> _favList.postValue(moviesList) },
                 { error: Throwable -> Log.d(TAG, "loadMovies: Error : $error") })
-    }
-}
-
-class MovieViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MoviesViewModel::class.java)) {
-            return MoviesViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
+    }*/
 }

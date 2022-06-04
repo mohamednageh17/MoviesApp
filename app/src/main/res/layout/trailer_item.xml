@@ -4,7 +4,7 @@
     <data>
         <variable
             name="trailerItem"
-            type="com.example.moviesapp.data.Trailer" />
+            type="com.example.moviesapp.domain.model.Trailer" />
     </data>
 
     <androidx.cardview.widget.CardView

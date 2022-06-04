@@ -1,4 +1,4 @@
-package com.example.moviesapp.data.Utilis
+package com.example.moviesapp.presentation.Utilis
 
 import androidx.lifecycle.MutableLiveData
 

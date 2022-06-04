@@ -1,40 +1,45 @@
 package com.example.moviesapp.presentation.viewmodel
 
-
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.moviesapp.data.TrailerResponse
-import com.example.moviesapp.data.Movie
-import com.example.moviesapp.data.repository.Repository
+import com.example.moviesapp.presentation.Utilis.StateLiveData
+import com.example.moviesapp.domain.model.Trailer
+import com.example.moviesapp.domain.usecases.GetMovieTrailersUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-private const val TAG = "DetailsActivityViewMode"
-class MovieDetailsViewModel(private val repository: Repository):ViewModel() {
-    private var _movieTrailer = MutableLiveData<TrailerResponse>()
-    val movieTrailer: LiveData<TrailerResponse> get() = _movieTrailer
+@HiltViewModel
+class MovieDetailsViewModel @Inject constructor(private val trailerUseCase: GetMovieTrailersUseCase) :
+    ViewModel() {
+    private var _movieTrailer = StateLiveData<List<Trailer>>()
+    val movieTrailer: StateLiveData<List<Trailer>> get() = _movieTrailer
 
-    private var _isFavourite= MutableLiveData<Boolean>()
-    val isFavourite:LiveData<Boolean>get() = _isFavourite
+    private var _isFavourite = MutableLiveData<Boolean>()
+    val isFavourite: LiveData<Boolean> get() = _isFavourite
 
     init {
-        Log.d(TAG, "nageh View model created ... : ")
+
     }
 
-    fun getMovieTrailer(id:Long?) {
-        repository.getMovieTrailerFromApi(id)
+    fun getMovieTrailer(id: Long) {
+        trailerUseCase(id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ response: TrailerResponse -> _movieTrailer.value = response },
-                { error: Throwable -> Log.d(TAG, "loadMovieTrailer: Error : $error") }
-            )
+            .doOnSubscribe {
+                _movieTrailer.postLoading()
+            }
+            .subscribe({
+                _movieTrailer.postSuccess(it)
+            }, {
+                _movieTrailer.postError(it)
+            })
     }
 
-    fun checkMovieIsFavourite(id: Long) {
-        repository.checkMovieIsFavourite(id)
+    /*fun checkMovieIsFavourite(id: Long) {
+        repositoryImpl.checkMovieIsFavourite(id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ moviesList: List<Movie> -> if(moviesList.size>0) _isFavourite.postValue(true) else _isFavourite.postValue(false)},
@@ -42,24 +47,16 @@ class MovieDetailsViewModel(private val repository: Repository):ViewModel() {
     }
 
     fun setAsFavourite(movie: Movie){
-        repository.setMovieAsFavourite(movie)
+        repositoryImpl.setMovieAsFavourite(movie)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe ({_isFavourite.postValue(true)},{})
     }
 
     fun removeFromFavourite(movie: Movie){
-        repository.removeMovieFromFavourite(movie)
+        repositoryImpl.removeMovieFromFavourite(movie)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe ({_isFavourite.postValue(false)},{})
-    }
-}
-
-class MovieDetailsViewModelFactory(private val repository: Repository): ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        if(modelClass.isAssignableFrom(MovieDetailsViewModel::class.java))
-            return MovieDetailsViewModel(repository) as T
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
+    }*/
 }

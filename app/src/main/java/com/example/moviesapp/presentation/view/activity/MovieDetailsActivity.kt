@@ -1,80 +1,60 @@
 package com.example.moviesapp.presentation.view.activity
 
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
+
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.example.moviesapp.R
 import com.example.moviesapp.presentation.view.adapter.TrailersAdapter
-import com.example.moviesapp.data.Movie
-import com.example.moviesapp.data.Trailer
-import com.example.moviesapp.data.network.MoviesApi
-import com.example.moviesapp.data.repository.Repository
-import com.example.moviesapp.data.room.MovieDatabase
+import com.example.moviesapp.domain.model.Trailer
 import com.example.moviesapp.databinding.ActivityMovieDetailsBinding
+import com.example.moviesapp.domain.model.MovieModel
 import com.example.moviesapp.presentation.viewmodel.MovieDetailsViewModel
-import com.example.moviesapp.presentation.viewmodel.MovieDetailsViewModelFactory
-import com.example.moviesapp.presentation.viewmodel.MovieViewModelFactory
-import com.example.moviesapp.presentation.viewmodel.MoviesViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MovieDetailsActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMovieDetailsBinding
-    lateinit var repository: Repository
-    private lateinit var movieDetailsViewModelFactory: MovieDetailsViewModelFactory
-    private lateinit var movieDetailsViewModel: MovieDetailsViewModel
+    private val movieDetailsViewModel: MovieDetailsViewModel by viewModels()
     lateinit var trailersAdapter: TrailersAdapter
 
-    lateinit var movie:Movie
+    lateinit var movie: MovieModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMovieDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-         movie = (intent.getParcelableExtra("movie") as? Movie)!!
+        movie = (intent.getParcelableExtra("movie") as? MovieModel)!!
 
-        initViewModel()
+        if (movie != null) {
+            observeUI()
 
-        observeUI()
-
-        initViews()
+            initViews()
+        }
     }
 
-    private fun initViewModel() {
-        val retrofitService = MoviesApi.retrofitService
 
-        val movieDb = MovieDatabase.getDatabase(this)
-        repository = Repository(retrofitService, movieDb)
-        movieDetailsViewModelFactory = MovieDetailsViewModelFactory(repository)
-        movieDetailsViewModel = ViewModelProvider(this, movieDetailsViewModelFactory)
-            .get(MovieDetailsViewModel::class.java)
-        binding.movieItem = movie
-        binding.lifecycleOwner
-        movieDetailsViewModel.getMovieTrailer(movie!!.id)
-    }
-
-    private fun initViews( ) {
+    private fun initViews() {
         binding.favFab.setOnClickListener(View.OnClickListener {
-            onFavFabClicked(movie)
+            //onFavFabClicked(movie)
         })
         this.title = movie.name
-        movieDetailsViewModel.checkMovieIsFavourite(movie!!.id!!)
+        //  movieDetailsViewModel.checkMovieIsFavourite(movie!!.id!!)
     }
 
     private fun observeUI() {
         movieDetailsViewModel.isFavourite.observe(this, Observer {
             when (it) {
-                true -> markMovieAsFavourite()
-                false -> markMovieAsUnFavourite()
+                /* true -> markMovieAsFavourite()
+                 false -> markMovieAsUnFavourite()*/
             }
         })
 
@@ -89,24 +69,25 @@ class MovieDetailsActivity : AppCompatActivity() {
                         )
                     )
                 }
-                trailersAdapter = TrailersAdapter(movieDetailsViewModel.movieTrailer.value!!.results!!, itemOnClick)
+                trailersAdapter =
+                    TrailersAdapter(movieDetailsViewModel.movieTrailer.value!!.data!!, itemOnClick)
                 val snapHelper = LinearSnapHelper()
                 snapHelper.attachToRecyclerView(binding.trailersRecyclerView)
                 binding!!.trailersRecyclerView.adapter = trailersAdapter
                 binding.trailersTextView.text =
-                    "Trailers: ${movieDetailsViewModel.movieTrailer.value!!.results!!.size}"
+                    "Trailers: ${movieDetailsViewModel.movieTrailer.value!!.data!!.size}"
             }
         })
     }
 
-    private fun onFavFabClicked(movie: Movie) {
+/*    private fun onFavFabClicked(movie: Movie) {
         when (movieDetailsViewModel.isFavourite.value) {
             false -> setAsFavourite(movie)
             true -> removeMovieFromFavourite(movie)
         }
-    }
+    }*/
 
-    private fun setAsFavourite(movie: Movie){
+/*    private fun setAsFavourite(movie: Movie){
         movieDetailsViewModel.setAsFavourite(movie)
         Toast.makeText(
             this,
@@ -130,9 +111,9 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     private fun markMovieAsUnFavourite() {
         binding.favFab.imageTintList = ColorStateList.valueOf(Color.WHITE)
-    }
+    }*/
 
-    private fun onShareIconClicked(){
+    private fun onShareIconClicked() {
         val sendIntent: Intent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, "${movie.name} \n ${movie.overview}")

@@ -5,4 +5,9 @@
     <string name="movie_item_author">movie author</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="movie_name">Movie Name</string>
+    <string name="original_lang">Original Language</string>
+    <string name="article_share_btn_description">share this article</string>
+    <string name="posterContentDescription">Movie Poster Image</string>
 </resources>
