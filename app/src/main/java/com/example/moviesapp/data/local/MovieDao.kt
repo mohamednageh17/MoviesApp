@@ -5,13 +5,14 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.moviesapp.data.model.local.MovieEntity
+import com.example.moviesapp.domain.model.MovieModel
 import io.reactivex.Completable
 import io.reactivex.Single
 
 @Dao
 interface MovieDao {
     @Insert
-    fun insert(movie: MovieEntity):Completable
+    fun insert(movie:MovieEntity):Completable
 
     @Delete
     fun delete(movie: MovieEntity):Completable

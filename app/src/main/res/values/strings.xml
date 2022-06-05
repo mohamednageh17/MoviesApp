@@ -10,4 +10,10 @@
     <string name="original_lang">Original Language</string>
     <string name="article_share_btn_description">share this article</string>
     <string name="posterContentDescription">Movie Poster Image</string>
+
+    <string name="Popular_Movies"> popular</string>
+    <string name="Top_Rated_Movies">top_rated</string>
+    <string name="Airing_Today_Movies">airing_today</string>
+    <string name="On_The_Air_Movies">on_the_air</string>
+    <string name="Favourite_Movies">Favourite</string>
 </resources>

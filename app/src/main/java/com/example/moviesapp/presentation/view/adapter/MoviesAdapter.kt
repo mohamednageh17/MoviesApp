@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.moviesapp.R
+import com.example.moviesapp.data.model.remote.Movie
 import com.example.moviesapp.databinding.MovieItemBinding
 import com.example.moviesapp.domain.model.MovieModel
 
@@ -30,16 +31,15 @@ class MoviesAdapter(private val onItemClickListener: OnItemClickListener) :
 
     class MovieViewHolder(private val binding: MovieItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        private val poster = "https://image.tmdb.org/t/p/w500"
         fun bind(data: MovieModel) {
             binding.root.animation =
                 AnimationUtils.loadAnimation(binding.root.context, R.anim.animation)
             Glide.with(binding.moviePosterImg)
-                .load(poster + data.backdropPath)
+                .load(MovieModel.posterUrl + data.backdropPath)
                 .placeholder(R.drawable.no_image)
                 .into(binding.moviePosterImg)
             binding.movieNameTextView.text = data.name
-            binding.movieRatingBar.rating = data.voteAverage!!.toFloat()
+            binding.movieRatingBar.rating = data.voteAverage!!.toFloat()/2
             binding.movieDateTextView.text = data.firstAirDate
             binding.movieOriginalLangTextView.text=data.originalLanguage
         }

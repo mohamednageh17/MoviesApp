@@ -5,8 +5,12 @@
       <map>
         <entry key="..\:/1-Projects/Android/MoviesApp/app/src/main/res/layout/activity_main.xml" value="0.14722222222222223" />
         <entry key="..\:/1-Projects/Android/MoviesApp/app/src/main/res/layout/activity_movie_details.xml" value="0.25416666666666665" />
+        <entry key="..\:/1-Projects/Android/MoviesApp/app/src/main/res/layout/favourite_movies_fragment.xml" value="0.25416666666666665" />
         <entry key="..\:/1-Projects/Android/MoviesApp/app/src/main/res/layout/movie_item.xml" value="0.264" />
+        <entry key="..\:/1-Projects/Android/MoviesApp/app/src/main/res/layout/popular_movies_fragment.xml" value="0.25416666666666665" />
+        <entry key="..\:/1-Projects/Android/MoviesApp/app/src/main/res/layout/top_rated_movies_fragment.xml" value="0.25416666666666665" />
         <entry key="..\:/1-Projects/Android/MoviesApp/app/src/main/res/layout/trailer_item.xml" value="0.14722222222222223" />
+        <entry key="..\:/1-Projects/Android/MoviesApp/app/src/main/res/menu/menu.xml" value="0.264" />
         <entry key="..\:/1-Projects/Android/MoviesApp/app/src/main/res/menu/share_movie_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/1-Projects/MoviesApp/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/1-Projects/MoviesApp/app/src/main/res/layout/activity_movie_details.xml" value="0.176" />

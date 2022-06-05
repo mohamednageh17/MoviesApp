@@ -21,9 +21,6 @@ interface MoviesApiService{
     @GET("on_the_air?")
     fun getOnTheAirMovies():Single<MovieResponse>
 
-    @GET("latest?")
-    fun getLatestMovies():Single<MovieResponse>
-
     @GET("{id}/videos?")
     fun getMovieTrailer(@Path("id") id: Long?):Single<TrailerResponse>
 }

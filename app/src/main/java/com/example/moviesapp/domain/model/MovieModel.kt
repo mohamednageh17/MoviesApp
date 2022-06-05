@@ -18,12 +18,16 @@ data class MovieModel(
     val voteCount: Long? = null,
     val originCountry: List<String>? = null,
     val genreIDS: List<Long>? = null,
-    val trailer: Trailer? = null,
+    val trailerModel: TrailerModel? = null,
     val isFavourite: Boolean = false,
-) : Parcelable
+) : Parcelable{
+    companion object{
+        val posterUrl="https://image.tmdb.org/t/p/w500"
+    }
+}
 
 @Parcelize
-data class Trailer(
+data class TrailerModel(
     val iso639_1: String? = null,
     val iso3166_1: String? = null,
     val name: String? = null,

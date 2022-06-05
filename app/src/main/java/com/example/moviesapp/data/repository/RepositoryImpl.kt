@@ -1,12 +1,15 @@
 package com.example.moviesapp.data.repository
 
+import com.example.moviesapp.R
 import com.example.moviesapp.data.network.MoviesApiService
 import com.example.moviesapp.data.local.MovieDatabase
 import com.example.moviesapp.data.mapper.mapToDomain
+import com.example.moviesapp.data.mapper.mapToEntity
 import com.example.moviesapp.data.model.remote.MovieResponse
 import com.example.moviesapp.domain.model.MovieModel
-import com.example.moviesapp.domain.model.Trailer
+import com.example.moviesapp.domain.model.TrailerModel
 import com.example.moviesapp.domain.repositories.MoviesRepository
+import io.reactivex.Completable
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -17,52 +20,34 @@ class RepositoryImpl @Inject constructor(private val moviesApiService:MoviesApiS
     override fun fetchMoviesFromApi(type: String): Single<List<MovieModel>> {
         lateinit var moviewResponse:Single<MovieResponse>
         when(type){
-            "popular"->moviewResponse= moviesApiService.getPopularMovies()
-            "top_rated"->moviewResponse= moviesApiService.getTopMovies()
-            "airing_today"->moviewResponse= moviesApiService.getAiringTodayMovies()
-            "on_the_air"->moviewResponse= moviesApiService.getOnTheAirMovies()
-            "latest"->moviewResponse= moviesApiService.getLatestMovies()
+            R.string.Popular_Movies.toString()->moviewResponse= moviesApiService.getPopularMovies()
+            R.string.Top_Rated_Movies.toString()->moviewResponse= moviesApiService.getTopMovies()
+            R.string.Airing_Today_Movies.toString()->moviewResponse= moviesApiService.getAiringTodayMovies()
+            R.string.On_The_Air_Movies.toString()->moviewResponse= moviesApiService.getOnTheAirMovies()
         }
         return moviewResponse.map {
             it.mapToDomain()
         }
     }
 
-    override fun getMovieTrailers(id: Long): Single<List<Trailer>> {
+    override fun getMovieTrailers(id: Long): Single<List<TrailerModel>> {
         return moviesApiService.getMovieTrailer(id).map {
             it.mapToDomain()
         }
     }
 
-/*    fun getTopRatedMoviesFromApi():Single<MovieResponse>{
-        return retrofit.getTopMovies()
+    override fun setMovieAsFavourite(movie: MovieModel): Completable {
+        return movieDB.movieDao().insert(movie.mapToEntity())
     }
 
-    fun getMovieTrailerFromApi(id:Long?):Single<TrailerResponse>{
-        return retrofit.getMovieTrailer(id)
+    override fun removeMovieFromFavourite(movie: MovieModel): Completable {
+        return movieDB.movieDao().delete(movie.mapToEntity())
     }
 
-    fun getOnTheAirMoviesFromApi():Single<MovieResponse>{
-        return retrofit.getOnTheAirMovies()
+    override fun getFavouriteMoviesFromLocalDb(): Single<List<MovieModel>> {
+        return movieDB.movieDao().getAllFavouriteMovies().map {
+            it.mapToDomain()
+        }
     }
 
-    fun getAiringTodayMoviesFromApi():Single<MovieResponse>{
-        return retrofit.getAiringTodayMovies()
-    }
-
-    fun setMovieAsFavourite(movie: Movie):Completable{
-        return movieDB.movieDao().insert(movie)
-    }
-
-    fun getFavouriteMoviesFromLocalDb():Single<List<Movie>>{
-        return movieDB.movieDao().getAllFavouriteMovies()
-    }
-
-    fun checkMovieIsFavourite(id: Long):Single<List<Movie>>{
-        return movieDB.movieDao().checkMovieIsFavourite(id)
-    }
-
-    fun removeMovieFromFavourite(movie: Movie):Completable{
-        return movieDB.movieDao().delete(movie)
-    }*/
 }

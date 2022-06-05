@@ -13,7 +13,9 @@ import com.example.moviesapp.presentation.view.adapter.MoviesAdapter
 import com.example.moviesapp.databinding.ActivityMainBinding
 import com.example.moviesapp.presentation.Utilis.StateData
 import com.example.moviesapp.domain.model.MovieModel
+import com.example.moviesapp.presentation.view.adapter.ViewPagerAdapter
 import com.example.moviesapp.presentation.viewmodel.MoviesViewModel
+import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,109 +23,41 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val moviesViewModel: MoviesViewModel by viewModels()
-
-    private val adapter by lazy { MoviesAdapter(MoviesAdapter.OnItemClickListener {
-        onMovieItemClicked(it)
-    }) }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        initUI()
-        observeUI()
+        setSupportActionBar(binding.toolbar)
+
+        setupViewPager()
+
+
     }
 
-    fun initUI(){
-        binding.recyclerView.adapter=adapter
+    private fun setupTabs() {
+        binding.tabs.addTab(binding.tabs.newTab().setText("Popular"))
+        binding.tabs.addTab(binding.tabs.newTab().setText("top rated"))
+        binding.tabs.addTab(binding.tabs.newTab().setText("favourites"))
+
+        binding.tabs.tabGravity = TabLayout.GRAVITY_FILL
     }
 
-    private fun observeUI() {
+    private fun setupViewPager() {
+        setupTabs()
 
-        moviesViewModel.movieResponse.observe(this){
-            when (it!!.status) {
-                StateData.DataStatus.LOADING -> showProgress()
-                StateData.DataStatus.SUCCESS -> handleSuccessState(it)
-                StateData.DataStatus.ERROR -> handleErrorState(it.error)
-                else -> {}
+        val adapter = ViewPagerAdapter(supportFragmentManager, binding.tabs.tabCount)
+        binding.viewPager.adapter = adapter
+        binding.viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(binding.tabs))
+
+        binding.tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                binding.viewPager.currentItem = tab.position
             }
-        }
 
-      /*  moviesViewModel.favList.observe(this){
-            if (it != null) {
-                binding.progress.visibility = View.GONE
-                moviesAdapter = MoviesAdapter(it, itemOnClick)
-                binding.moviesRecyclerView.adapter = moviesAdapter
-            }
-        }*/
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+            override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
     }
 
-    private fun showProgress() {
-        binding.progressBar.isVisible = true
-    }
-
-    private fun hideProgress() {
-        binding.progressBar.isVisible = false
-    }
-
-    private fun handleSuccessState(it: StateData<List<MovieModel>>) {
-        hideProgress()
-        adapter.submitList(it.data)
-    }
-
-    private fun handleErrorState(it: Throwable?) {
-        hideProgress()
-        Toast.makeText(this, it!!.message, Toast.LENGTH_LONG).show()
-    }
-
-    private fun onMovieItemClicked(movie: MovieModel) {
-        intent = Intent(this, MovieDetailsActivity::class.java)
-        intent.putExtra("movie", movie)
-        startActivity(intent)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        /* if (moviesViewModel.selectedMenuID == R.id.myFavItem)
-             moviesViewModel.getFavouriteMovies()*/
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.movie_types_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menuPopulerItem -> {
-                showProgress()
-                moviesViewModel.loadPopularMovies()
-                moviesViewModel.selectedMenuID = R.id.menuPopulerItem
-            }
-            R.id.menutopRatedItem -> {
-                showProgress()
-                moviesViewModel.loadTopMovies()
-                moviesViewModel.selectedMenuID = R.id.menutopRatedItem
-            }
-            R.id.menuAiringTodayItem -> {
-                showProgress()
-                moviesViewModel.loadAiringTodayMovies()
-                moviesViewModel.selectedMenuID = R.id.menuAiringTodayItem
-            }
-            R.id.menuOnTheAirItem -> {
-                showProgress()
-                moviesViewModel.loadOnTheAirMovies()
-                moviesViewModel.selectedMenuID = R.id.menuOnTheAirItem
-            }
-            R.id.myFavItem -> {
-                showProgress()
-               // moviesViewModel.getFavouriteMovies()
-                moviesViewModel.selectedMenuID = R.id.myFavItem
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 }

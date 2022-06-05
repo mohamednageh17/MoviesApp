@@ -1,7 +1,7 @@
 package com.example.moviesapp.data.model.remote
 
 import androidx.annotation.Keep
-import com.example.moviesapp.domain.model.Trailer
+import com.example.moviesapp.domain.model.TrailerModel
 import com.google.gson.annotations.SerializedName
 
 @Keep
@@ -44,5 +44,5 @@ data class Movie(
     var originCountry: List<String>? = null,
     @SerializedName("genre_ids")
     var genreIDS: List<Long>? = null,
-    var trailer: Trailer? = null,
+    var trailerModel: TrailerModel? = null,
 )
