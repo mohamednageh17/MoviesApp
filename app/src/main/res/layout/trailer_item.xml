@@ -6,23 +6,30 @@
     android:layout_height="wrap_content"
     android:layout_margin="20dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/trailerItemImgView"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:padding="10dp"
             android:src="@drawable/youtube_icon"></ImageView>
 
         <TextView
             android:id="@+id/trailerNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:padding="16dp"
-            android:textStyle="bold"></TextView>
-    </LinearLayout>
+            android:padding="10dp"
+            android:layout_toEndOf="@id/trailerItemImgView"
+            android:layout_alignParentTop="true"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="@color/black"/>
+
+    </RelativeLayout>
+
 </androidx.cardview.widget.CardView>

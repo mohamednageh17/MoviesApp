@@ -3,11 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/favAction"
-        android:icon="@drawable/baseline_favorite_white_24"
-        android:title="favourite"
-        app:showAsAction="ifRoom"></item>
 
     <item
         android:id="@+id/shareAction"

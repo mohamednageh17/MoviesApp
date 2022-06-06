@@ -10,6 +10,7 @@ import com.example.moviesapp.domain.model.MovieModel
 import com.example.moviesapp.domain.model.TrailerModel
 import com.example.moviesapp.domain.repositories.MoviesRepository
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 import javax.inject.Inject
 
@@ -50,4 +51,9 @@ class RepositoryImpl @Inject constructor(private val moviesApiService:MoviesApiS
         }
     }
 
+    override fun checkIfMovieIsAfavourite(id: Long): Single<MovieModel> {
+        return movieDB.movieDao().checkMovieIsFavourite(id).map {
+            it.mapToDomain()
+        }
+    }
 }

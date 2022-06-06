@@ -25,10 +25,6 @@ class MovieDetailsViewModel @Inject constructor(
     private var _isFavourite = MutableLiveData<Boolean>()
     val isFavourite: LiveData<Boolean> get() = _isFavourite
 
-    init {
-
-    }
-
     fun fetchTrailers(id: Long) {
         trailerUseCase(id)
             .subscribeOn(Schedulers.io())
@@ -45,14 +41,16 @@ class MovieDetailsViewModel @Inject constructor(
             .subscribe ({_isFavourite.postValue(true)},{})
     }
 
-    /*fun checkMovieIsFavourite(id: Long) {
-        repositoryImpl.checkMovieIsFavourite(id)
+    fun checkMovieIsFavourite(id: Long) {
+        favouriteMoviesUseCase.checkIfMovieIsAfavourite(id)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ moviesList: List<Movie> -> if(moviesList.size>0) _isFavourite.postValue(true) else _isFavourite.postValue(false)},
-                { error: Throwable -> Log.d(TAG, "loadMovies: Error : $error") })
-    }*/
-
+            .subscribe({
+                       if(it!=null) _isFavourite.postValue(true) else _isFavourite.postValue(false)
+            }, {
+                _isFavourite.postValue(false)
+            })
+    }
 
     fun removeFromFavourite(movie: MovieModel){
         favouriteMoviesUseCase.removeMoviesFromFavourite(movie)

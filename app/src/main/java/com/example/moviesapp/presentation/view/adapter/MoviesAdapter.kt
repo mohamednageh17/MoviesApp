@@ -11,6 +11,7 @@ import com.example.moviesapp.R
 import com.example.moviesapp.data.model.remote.Movie
 import com.example.moviesapp.databinding.MovieItemBinding
 import com.example.moviesapp.domain.model.MovieModel
+import com.example.moviesapp.presentation.Utilis.POSTER_URL
 
 class MoviesAdapter(private val onItemClickListener: OnItemClickListener) :
     ListAdapter<MovieModel, MoviesAdapter.MovieViewHolder>(ArticlesDiffCallBacks()) {
@@ -35,7 +36,7 @@ class MoviesAdapter(private val onItemClickListener: OnItemClickListener) :
             binding.root.animation =
                 AnimationUtils.loadAnimation(binding.root.context, R.anim.animation)
             Glide.with(binding.moviePosterImg)
-                .load(MovieModel.posterUrl + data.backdropPath)
+                .load(POSTER_URL + data.backdropPath)
                 .placeholder(R.drawable.no_image)
                 .into(binding.moviePosterImg)
             binding.movieNameTextView.text = data.name

@@ -6,11 +6,12 @@ import com.example.moviesapp.data.model.remote.TrailerResponse
 import io.reactivex.Single
 import retrofit2.http.GET
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 
 interface MoviesApiService{
     @GET("popular?")
-    fun getPopularMovies():Single<MovieResponse>
+    fun getPopularMovies(@Query("page") page:Int=1):Single<MovieResponse>
 
     @GET("top_rated?")
     fun getTopMovies():Single<MovieResponse>

@@ -3,6 +3,7 @@ package com.example.moviesapp.domain.repositories
 import com.example.moviesapp.domain.model.MovieModel
 import com.example.moviesapp.domain.model.TrailerModel
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 interface MoviesRepository {
@@ -17,5 +18,5 @@ interface MoviesRepository {
 
     fun getFavouriteMoviesFromLocalDb(): Single<List<MovieModel>>
 
-
+    fun checkIfMovieIsAfavourite(id:Long): Single<MovieModel>
 }

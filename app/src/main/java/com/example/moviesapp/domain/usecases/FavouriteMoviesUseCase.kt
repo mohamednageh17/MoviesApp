@@ -11,4 +11,6 @@ class FavouriteMoviesUseCase @Inject constructor(private val moviesRepository: M
     open fun removeMoviesFromFavourite(movie: MovieModel)=moviesRepository.removeMovieFromFavourite(movie)
 
     open fun getAllFavouriteMovies()=moviesRepository.getFavouriteMoviesFromLocalDb()
+
+    open fun checkIfMovieIsAfavourite(id:Long)=moviesRepository.checkIfMovieIsAfavourite(id)
 }

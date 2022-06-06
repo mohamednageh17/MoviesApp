@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.example.moviesapp.data.model.local.MovieEntity
 import com.example.moviesapp.domain.model.MovieModel
 import io.reactivex.Completable
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 @Dao
@@ -24,5 +25,5 @@ interface MovieDao {
     fun getAllFavouriteMovies():Single<List<MovieEntity>>
 
     @Query("select * from fav_movie where id=:id")
-    fun checkMovieIsFavourite(id:Long):Single<List<MovieEntity>>
+    fun checkMovieIsFavourite(id:Long):Single<MovieEntity>
 }

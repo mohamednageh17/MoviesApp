@@ -27,8 +27,14 @@ class MoviesViewModel @Inject constructor(
         fetchMoviesUseCase(R.string.Popular_Movies.toString())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { _movieResponse.postLoading() }
-            .subscribe({ _movieResponse.postSuccess(it) }, { _movieResponse.postError(it) })
+            .doOnSubscribe {
+                _movieResponse.postLoading()
+            }
+            .subscribe({
+                _movieResponse.postSuccess(it)
+            }, {
+                _movieResponse.postError(it)
+            })
             .addTo(compositeDisposable)
     }
 
@@ -36,11 +42,18 @@ class MoviesViewModel @Inject constructor(
         fetchMoviesUseCase(R.string.Top_Rated_Movies.toString())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { _movieResponse.postLoading() }
-            .subscribe({ _movieResponse.postSuccess(it) }, { _movieResponse.postError(it) })
+            .doOnSubscribe {
+                _movieResponse.postLoading()
+            }
+            .subscribe({
+                _movieResponse.postSuccess(it)
+            }, {
+                _movieResponse.postError(it)
+            })
             .addTo(compositeDisposable)
     }
 
+/*
     fun loadOnTheAirMovies() {
         fetchMoviesUseCase(R.string.On_The_Air_Movies.toString())
             .subscribeOn(Schedulers.io())
@@ -58,13 +71,18 @@ class MoviesViewModel @Inject constructor(
             .subscribe({ _movieResponse.postSuccess(it) }, { _movieResponse.postError(it) })
             .addTo(compositeDisposable)
     }
+*/
 
     fun loadFavouriteMovies() {
         favouriteMoviesUseCase.getAllFavouriteMovies()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe { _movieResponse.postLoading() }
-            .subscribe({ _movieResponse.postSuccess(it) }, { _movieResponse.postError(it) })
+            .doOnSubscribe {
+                _movieResponse.postLoading()
+            }
+            .subscribe({
+                _movieResponse.postSuccess(it)
+            }, { _movieResponse.postError(it) })
             .addTo(compositeDisposable)
     }
 

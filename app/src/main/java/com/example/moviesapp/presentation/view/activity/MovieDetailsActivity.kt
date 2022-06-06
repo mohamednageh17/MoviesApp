@@ -1,11 +1,15 @@
 package com.example.moviesapp.presentation.view.activity
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -14,13 +18,15 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.bumptech.glide.Glide
 import com.example.moviesapp.R
-import com.example.moviesapp.presentation.view.adapter.TrailersAdapter
-import com.example.moviesapp.domain.model.TrailerModel
 import com.example.moviesapp.databinding.ActivityMovieDetailsBinding
 import com.example.moviesapp.domain.model.MovieModel
+import com.example.moviesapp.domain.model.TrailerModel
+import com.example.moviesapp.presentation.Utilis.POSTER_URL
 import com.example.moviesapp.presentation.Utilis.StateData
+import com.example.moviesapp.presentation.view.adapter.TrailersAdapter
 import com.example.moviesapp.presentation.viewmodel.MovieDetailsViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MovieDetailsActivity : AppCompatActivity() {
@@ -49,6 +55,10 @@ class MovieDetailsActivity : AppCompatActivity() {
 
         observeUI()
 
+        binding.favFab.setOnClickListener {
+            onFavActionClicked(movie)
+        }
+
     }
 
     private fun supportActionBar() {
@@ -67,14 +77,16 @@ class MovieDetailsActivity : AppCompatActivity() {
         initTrailersRecyclerView()
 
         Glide.with(binding.posterImgView)
-            .load(MovieModel.posterUrl + movie.posterPath)
+            .load(POSTER_URL + movie.posterPath)
             .placeholder(R.drawable.no_image)
             .into(binding.posterImgView)
 
-        binding.overviewTV.text = movie.overview
         binding.firstAirDateTV.text = movie.firstAirDate
+        binding.voteCountTV.text="${movie.voteCount!!}"
+        binding.voteAvarageTV.text="${movie.voteAverage!!} / 10"
+        binding.overviewTV.text = movie.overview
 
-        //  movieDetailsViewModel.checkMovieIsFavourite(movie!!.id!!)
+        movieDetailsViewModel.checkMovieIsFavourite(movie!!.id!!)
     }
 
     private fun initTrailersRecyclerView() {
@@ -86,8 +98,14 @@ class MovieDetailsActivity : AppCompatActivity() {
     private fun observeUI() {
         movieDetailsViewModel.isFavourite.observe(this, Observer {
             when (it) {
-                true -> markMovieAsFavourite()
-                false -> markMovieAsUnFavourite()
+                true -> {
+                    movie.isFavourite = true
+                    markMovieAsFavourite()
+                }
+                false -> {
+                    markMovieAsUnFavourite()
+                    movie.isFavourite = false
+                }
             }
         })
 
@@ -118,8 +136,9 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     private fun handleSuccessState(it: StateData<List<TrailerModel>>) {
         hideProgress()
+        binding.trailersRecyclerView.visibility=View.VISIBLE
         trailersAdapter.submitList(it.data)
-        binding.trailersTextView.text =
+        binding.trailers.text =
             "Trailers: ${it.data!!.size}"
     }
 
@@ -146,25 +165,33 @@ class MovieDetailsActivity : AppCompatActivity() {
         ).show()
     }
 
-     private fun removeMovieFromFavourite(movie: MovieModel){
-         movieDetailsViewModel.removeFromFavourite(movie)
-         Toast.makeText(
-             this,
-             "This movie is removed from your favourite list",
-             Toast.LENGTH_LONG
-         ).show()
-     }
+    private fun removeMovieFromFavourite(movie: MovieModel) {
+        movieDetailsViewModel.removeFromFavourite(movie)
+        Toast.makeText(
+            this,
+            "This movie is removed from your favourite list",
+            Toast.LENGTH_LONG
+        ).show()
+    }
 
     private fun markMovieAsFavourite() {
-        binding.favFab.imageTintList = ColorStateList.valueOf(Color.RED)
+        binding.favFab.setBackgroundTintList(ColorStateList.valueOf(Color.RED))
+        binding.favFab.setText(R.string.remove_from_favourite)
+        binding.favFab.setTextColor(Color.WHITE)
     }
 
     private fun markMovieAsUnFavourite() {
-        binding.favFab.imageTintList = ColorStateList.valueOf(Color.WHITE)
+        binding.favFab.setBackgroundTintList(ColorStateList.valueOf(Color.GREEN));
+        binding.favFab.setText(R.string.add_to_favourite)
+        binding.favFab.setTextColor(Color.BLACK)
+
     }
 
     private fun onFavActionClicked(movie: MovieModel) {
-        setAsFavourite(movie)
+        when(movie.isFavourite){
+            true->removeMovieFromFavourite(movie)
+            false->setAsFavourite(movie)
+        }
     }
 
     private fun onShareActionClicked() {
@@ -179,13 +206,13 @@ class MovieDetailsActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: android.view.Menu): Boolean {
         menuInflater.inflate(R.menu.menu, menu)
+
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.shareAction -> onShareActionClicked()
-            R.id.favAction -> onFavActionClicked(movie)
         }
         return super.onOptionsItemSelected(item)
     }
